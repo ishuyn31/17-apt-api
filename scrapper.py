@@ -1,39 +1,40 @@
-import requests
+import requests 
 import xml.etree.ElementTree as ET
+
 import os
 from dotenv import load_dotenv
 
 # .env 파일 로드
 load_dotenv()
 
-debug_mode = os.getenv('SERVICE_KEY')
+SERVICE_KEY = os.getenv("SERVICE_KEY")
+
+# print(SERVICE_KEY)
 
 def fetch_apt_trade(LAWD_CD, DEAL_YMD):
-
-    # LAWD_CD = '27260'
-    # DEAL_YMD ='202606'
+    # LAWD_CD="27260"
+    # DEAL_YMD="202606"
     serviceKey=SERVICE_KEY
-    # URL = 'https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade?LAWD_CD=27260&DEAL_YMD=202606&serviceKey=fda15a4ea6f17b1881eacf8bcf29dd1adade7db63f80dc3c643d8b7ec3ec398d'
     URL='https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade'
 
-    params = {
-        'serviceKey': serviceKey,
-        'LAWD_CD': LAWD_CD,
-        'DEAL_YMD': DEAL_YMD
+    params={
+        "serviceKey": serviceKey,
+        "LAWD_CD": LAWD_CD, 
+        "DEAL_YMD": DEAL_YMD
     }
 
     response = requests.get(URL, params=params)
     # print(response.content)
     root = ET.fromstring(response.content)
 
-    items = root.findall('./body/items/item')
+    items = root.findall("./body/items/item")
 
     results = []
     for item in items:
-        row= {}
+        row = {}
         for child in item:
             row[child.tag] = child.text
-
+        
         results.append(row)
-    
+
     return results
